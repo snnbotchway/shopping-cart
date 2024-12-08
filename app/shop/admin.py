@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Cart, CartItem, Product
+from .models import Cart, CartItem, Product, ProductImageSet
 
 
 @admin.register(Product)
@@ -28,3 +28,10 @@ class CartAdmin(admin.ModelAdmin):
     search_fields = ["user__email"]
     ordering = ["user__email"]
     inlines = [CartItemInline]
+
+
+@admin.register(ProductImageSet)
+class ProductImageSetAdmin(admin.ModelAdmin):
+    list_display = ("product", "thumbnail", "mobile", "tablet", "desktop")
+    search_fields = ("product__name",)
+    list_filter = ("product__category",)
