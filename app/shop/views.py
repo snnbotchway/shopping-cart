@@ -2,13 +2,16 @@ from core.permissions import IsAdminUserOrReadOnly
 from django.shortcuts import get_object_or_404
 from drf_spectacular.utils import extend_schema
 from rest_framework import permissions, status, viewsets
+from rest_framework.decorators import action
+from rest_framework.parsers import MultiPartParser
 from rest_framework.response import Response
 
-from .models import Cart, CartItem, Product
+from .models import Cart, CartItem, Product, ProductImageSet
 from .serializers import (
     CartItemCreateSerializer,
     CartItemSerializer,
     CartItemUpdateSerializer,
+    ProductImageSetSerializer,
     ProductSerializer,
 )
 
@@ -19,6 +22,20 @@ class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     permission_classes = [IsAdminUserOrReadOnly]
+
+    def get_serializer_class(self):
+        if self.action == "upload_images":
+            return ProductImageSetSerializer
+        return super().get_serializer_class()
+
+    @action(detail=True, methods=["post"], parser_classes=[MultiPartParser])
+    def upload_images(self, request, pk=None):
+        product = self.get_object()
+        image_set, _ = ProductImageSet.objects.get_or_create(product=product)
+        serializer = self.get_serializer(image_set, data=request.FILES, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class CartViewSet(viewsets.ViewSet):

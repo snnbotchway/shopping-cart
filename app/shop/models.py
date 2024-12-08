@@ -1,8 +1,38 @@
+import os
+
 from django.contrib.auth import get_user_model
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 
 User = get_user_model()
+
+
+class ImageUploadPaths:
+    base_path = os.path.join("uploads", "products")
+
+    @staticmethod
+    def _get_extension(filename):
+        return filename.split(".")[-1]
+
+    @classmethod
+    def thumbnail(cls, instance: "Product", filename: str) -> str:
+        extension = ImageUploadPaths._get_extension(filename)
+        return os.path.join(cls.base_path, str(instance.product.id), f"thumbnail.{extension}")
+
+    @classmethod
+    def mobile(cls, instance: "Product", filename: str) -> str:
+        extension = ImageUploadPaths._get_extension(filename)
+        return os.path.join(cls.base_path, str(instance.product.id), f"mobile.{extension}")
+
+    @classmethod
+    def tablet(cls, instance: "Product", filename: str) -> str:
+        extension = ImageUploadPaths._get_extension(filename)
+        return os.path.join(cls.base_path, str(instance.product.id), f"tablet.{extension}")
+
+    @classmethod
+    def desktop(cls, instance: "Product", filename: str) -> str:
+        extension = ImageUploadPaths._get_extension(filename)
+        return os.path.join(cls.base_path, str(instance.product.id), f"desktop.{extension}")
 
 
 class Product(models.Model):
@@ -13,6 +43,17 @@ class Product(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class ProductImageSet(models.Model):
+    product = models.OneToOneField(Product, on_delete=models.CASCADE, related_name="images")
+    thumbnail = models.ImageField(upload_to=ImageUploadPaths.thumbnail, blank=True, null=True)
+    mobile = models.ImageField(upload_to=ImageUploadPaths.mobile, blank=True, null=True)
+    tablet = models.ImageField(upload_to=ImageUploadPaths.tablet, blank=True, null=True)
+    desktop = models.ImageField(upload_to=ImageUploadPaths.desktop, blank=True, null=True)
+
+    def __str__(self):
+        return f"ProductImageSet for {self.product.name}"
 
 
 class Cart(models.Model):
