@@ -16,24 +16,24 @@ class ImageUploadPaths:
         return filename.split(".")[-1]
 
     @classmethod
-    def thumbnail(cls, instance: "Product", filename: str) -> str:
+    def thumbnail(cls, instance: "ProductImageSet", filename: str) -> str:
         extension = ImageUploadPaths._get_extension(filename)
-        return os.path.join(cls.base_path, str(instance.product.id), f"thumbnail.{extension}")
+        return os.path.join(cls.base_path, str(instance.product.pk), f"thumbnail.{extension}")
 
     @classmethod
-    def mobile(cls, instance: "Product", filename: str) -> str:
+    def mobile(cls, instance: "ProductImageSet", filename: str) -> str:
         extension = ImageUploadPaths._get_extension(filename)
-        return os.path.join(cls.base_path, str(instance.product.id), f"mobile.{extension}")
+        return os.path.join(cls.base_path, str(instance.product.pk), f"mobile.{extension}")
 
     @classmethod
-    def tablet(cls, instance: "Product", filename: str) -> str:
+    def tablet(cls, instance: "ProductImageSet", filename: str) -> str:
         extension = ImageUploadPaths._get_extension(filename)
-        return os.path.join(cls.base_path, str(instance.product.id), f"tablet.{extension}")
+        return os.path.join(cls.base_path, str(instance.product.pk), f"tablet.{extension}")
 
     @classmethod
-    def desktop(cls, instance: "Product", filename: str) -> str:
+    def desktop(cls, instance: "ProductImageSet", filename: str) -> str:
         extension = ImageUploadPaths._get_extension(filename)
-        return os.path.join(cls.base_path, str(instance.product.id), f"desktop.{extension}")
+        return os.path.join(cls.base_path, str(instance.product.pk), f"desktop.{extension}")
 
 
 class Product(models.Model):
