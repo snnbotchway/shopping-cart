@@ -17,4 +17,6 @@ RUN apk add --no-cache postgresql-libs && \
         pip install --no-cache-dir -r /requirements/prod.txt ; \
     fi && \
     rm -rf /requirements && \
-    apk --purge del .build-deps
+    apk --purge del .build-deps && \
+    mkdir -p /vol/web/static && \
+    mkdir -p /vol/web/media
