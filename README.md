@@ -1,6 +1,4 @@
-# project_name
-
-To get started, rename all instances of `project_name` in the codebase to the name of your project, and delete this line.
+# shopping_cart
 
 ## Development Environment Setup
 
