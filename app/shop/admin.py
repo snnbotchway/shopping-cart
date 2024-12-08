@@ -3,11 +3,17 @@ from django.contrib import admin
 from .models import Cart, CartItem, Product, ProductImageSet
 
 
+class ProductImageSetInline(admin.StackedInline):
+    model = ProductImageSet
+    extra = 1
+
+
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
     list_display = ["name", "category", "price"]
     search_fields = ["name", "category"]
     ordering = ["name"]
+    inlines = [ProductImageSetInline]
 
 
 @admin.register(CartItem)
