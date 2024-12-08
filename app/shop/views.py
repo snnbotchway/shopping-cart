@@ -5,6 +5,7 @@ from rest_framework import permissions, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.parsers import MultiPartParser
 from rest_framework.response import Response
+from shop.filters import ProductFilter
 
 from .models import Cart, CartItem, Product, ProductImageSet
 from .serializers import (
@@ -22,6 +23,7 @@ class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     permission_classes = [IsAdminUserOrReadOnly]
+    filterset_class = ProductFilter
 
     def get_serializer_class(self):
         if self.action == "upload_images":
