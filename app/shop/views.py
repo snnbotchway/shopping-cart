@@ -1,7 +1,7 @@
 from core.permissions import IsAdminUserOrReadOnly
 from django.shortcuts import get_object_or_404
 from drf_spectacular.utils import extend_schema
-from rest_framework import permissions, viewsets
+from rest_framework import permissions, status, viewsets
 from rest_framework.response import Response
 
 from .models import Cart, CartItem, Product
@@ -43,16 +43,16 @@ class CartViewSet(viewsets.ViewSet):
         serializer = CartItemCreateSerializer(data=request.data)
 
         if not serializer.is_valid():
-            return Response(serializer.errors, status=400)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
         product = serializer.validated_data["product"]
         quantity = serializer.validated_data["quantity"]
         cart_item, created = CartItem.objects.get_or_create(cart=cart, product=product, defaults={"quantity": quantity})
 
         if not created:
-            return Response({"error": "Product already in cart"}, status=400)
+            return Response({"error": "Product already in cart"}, status=status.HTTP_400_BAD_REQUEST)
 
-        return Response(CartItemSerializer(cart_item).data)
+        return Response(CartItemSerializer(cart_item).data, status=status.HTTP_201_CREATED)
 
     @extend_schema(
         request=CartItemUpdateSerializer,
@@ -66,14 +66,14 @@ class CartViewSet(viewsets.ViewSet):
         serializer = CartItemUpdateSerializer(cart_item, data=request.data, partial=True)
 
         if not serializer.is_valid():
-            return Response(serializer.errors, status=400)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
         serializer.save()
-        return Response(CartItemSerializer(cart_item).data)
+        return Response(CartItemSerializer(cart_item).data, status=status.HTTP_200_OK)
 
     @extend_schema(responses=CartItemSerializer(many=True), description="Remove a product from the cart")
     def destroy(self, request, pk=None):
         cart, _ = Cart.objects.get_or_create(user=request.user)
         cart_item = get_object_or_404(CartItem, cart=cart, id=pk)
         cart_item.delete()
-        return Response(status=204)
+        return Response(status=status.HTTP_204_NO_CONTENT)
