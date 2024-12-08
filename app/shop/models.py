@@ -1,5 +1,6 @@
 import os
 
+from config.storage import OVERWRITE_STORAGE
 from django.contrib.auth import get_user_model
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
@@ -47,10 +48,10 @@ class Product(models.Model):
 
 class ProductImageSet(models.Model):
     product = models.OneToOneField(Product, on_delete=models.CASCADE, related_name="images")
-    thumbnail = models.ImageField(upload_to=ImageUploadPaths.thumbnail, blank=True, null=True)
-    mobile = models.ImageField(upload_to=ImageUploadPaths.mobile, blank=True, null=True)
-    tablet = models.ImageField(upload_to=ImageUploadPaths.tablet, blank=True, null=True)
-    desktop = models.ImageField(upload_to=ImageUploadPaths.desktop, blank=True, null=True)
+    thumbnail = models.ImageField(upload_to=ImageUploadPaths.thumbnail, blank=True, null=True, storage=OVERWRITE_STORAGE)
+    mobile = models.ImageField(upload_to=ImageUploadPaths.mobile, blank=True, null=True, storage=OVERWRITE_STORAGE)
+    tablet = models.ImageField(upload_to=ImageUploadPaths.tablet, blank=True, null=True, storage=OVERWRITE_STORAGE)
+    desktop = models.ImageField(upload_to=ImageUploadPaths.desktop, blank=True, null=True, storage=OVERWRITE_STORAGE)
 
     def __str__(self):
         return f"ProductImageSet for {self.product.name}"
