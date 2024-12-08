@@ -41,9 +41,7 @@ class CartViewSet(viewsets.ViewSet):
     def create(self, request):
         cart, _ = Cart.objects.get_or_create(user=request.user)
         serializer = CartItemCreateSerializer(data=request.data)
-
-        if not serializer.is_valid():
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        serializer.is_valid(raise_exception=True)
 
         product = serializer.validated_data["product"]
         quantity = serializer.validated_data["quantity"]
@@ -64,11 +62,9 @@ class CartViewSet(viewsets.ViewSet):
         cart_item = get_object_or_404(CartItem, cart=cart, id=pk)
 
         serializer = CartItemUpdateSerializer(cart_item, data=request.data, partial=True)
-
-        if not serializer.is_valid():
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
+        serializer.is_valid(raise_exception=True)
         serializer.save()
+
         return Response(CartItemSerializer(cart_item).data, status=status.HTTP_200_OK)
 
     @extend_schema(responses=CartItemSerializer(many=True), description="Remove a product from the cart")
