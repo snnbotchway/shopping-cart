@@ -30,6 +30,13 @@ def sample_user(user_payload):
 
 
 @pytest.fixture
+def other_user(user_payload):
+    """Create and return a sample user."""
+    payload = {**user_payload, "email": "other_user@example.com"}
+    return baker.make(User, **payload)
+
+
+@pytest.fixture
 def sample_admin(user_payload):
     """Create and return a sample admin user."""
     return baker.make(User, is_staff=True, **user_payload)
