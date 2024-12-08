@@ -4,6 +4,7 @@ ENV PYTHONUNBUFFERED 1
 
 COPY ./requirements /requirements
 COPY ./app /app
+COPY ./scripts /scripts
 WORKDIR /app
 EXPOSE 8000
 
@@ -19,4 +20,9 @@ RUN apk add --no-cache postgresql-libs && \
     rm -rf /requirements && \
     apk --purge del .build-deps && \
     mkdir -p /vol/web/static && \
-    mkdir -p /vol/web/media
+    mkdir -p /vol/web/media && \
+    chmod -R +x /scripts
+
+ENV PATH="/scripts:$PATH"
+
+CMD ["run.sh"]
